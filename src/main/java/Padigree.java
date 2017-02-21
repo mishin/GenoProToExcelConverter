@@ -1,7 +1,7 @@
 /**
- * Class for storing Padigree.
+ * Class for storing Pedigree.
  */
-class Padigree {
+class Pedigree {
     private String ID;
     private String title;
     private String prefix;
@@ -13,50 +13,22 @@ class Padigree {
     private String fatherId;
     private String motherId;
     private String email;
-    private String webpage;
+    private String webPage;
     private String dateOfBirth;
     private String dateOfDeath;
     private String gender;
     private String isLiving;
     private String placeOfBirth;
-    private String placeOfDdeath;
+    private String placeOfDeath;
     private String cemetery;
     private String schools;
     private String jobs;
     private String workPlaces;
     private String placesOfLiving;
     private String general;
+    private String family;
 
-// --Commented out by Inspection START (21.02.2017 13:01):
-//    public Padigree(String ID, String title, String prefix, String firstName, String midName, String lastName, String suffix, String nickname, String fatherId, String motherId, String email, String webpage, String dateOfBirth, String dateOfDeath, String gender, String isLiving, String placeOfBirth, String placeOfDdeath, String cemetery, String schools, String jobs, String workPlaces, String placesOfLiving, String general) {
-//        this.ID = ID;
-//        this.title = title;
-//        this.prefix = prefix;
-//        this.firstName = firstName;
-//        this.midName = midName;
-//        this.lastName = lastName;
-//        this.suffix = suffix;
-//        this.nickname = nickname;
-//        this.fatherId = fatherId;
-//        this.motherId = motherId;
-//        this.email = email;
-//        this.webpage = webpage;
-//        this.dateOfBirth = dateOfBirth;
-//        this.dateOfDeath = dateOfDeath;
-//        this.gender = gender;
-//        this.isLiving = isLiving;
-//        this.placeOfBirth = placeOfBirth;
-//        this.placeOfDdeath = placeOfDdeath;
-//        this.cemetery = cemetery;
-//        this.schools = schools;
-//        this.jobs = jobs;
-//        this.workPlaces = workPlaces;
-//        this.placesOfLiving = placesOfLiving;
-//        this.general = general;
-//    }
-// --Commented out by Inspection STOP (21.02.2017 13:01)
-
-    public Padigree() {
+    public Pedigree() {
 
     }
 
@@ -148,12 +120,12 @@ class Padigree {
         this.email = email;
     }
 
-    public String getWebpage() {
-        return webpage;
+    public String getWebPage() {
+        return webPage;
     }
 
-    public void setWebpage(String webpage) {
-        this.webpage = webpage;
+    public void setWebPage(String webPage) {
+        this.webPage = webPage;
     }
 
     public String getDateOfBirth() {
@@ -196,12 +168,12 @@ class Padigree {
         this.placeOfBirth = placeOfBirth;
     }
 
-    public String getPlaceOfDdeath() {
-        return placeOfDdeath;
+    public String getPlaceOfDeath() {
+        return placeOfDeath;
     }
 
-    public void setPlaceOfDdeath(String placeOfDdeath) {
-        this.placeOfDdeath = placeOfDdeath;
+    public void setPlaceOfDeath(String placeOfDeath) {
+        this.placeOfDeath = placeOfDeath;
     }
 
     public String getCemetery() {
@@ -250,5 +222,13 @@ class Padigree {
 
     public void setGeneral(String general) {
         this.general = general;
+    }
+
+    public String getFamily() {
+        return family;
+    }
+
+    public void setFamily(String family) {
+        this.family = family;
     }
 }
