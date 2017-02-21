@@ -51,13 +51,11 @@ class ReadXlsxFile {
         HashMap<String, String> familyCodeMap = new HashMap<>();
 //        int numberOfColumns = 23;
         int numberOfRows = 526;
-//        String[][] data = new String[numberOfColumns][numberOfRows];
         List<Pedigree> pedigreeList = new ArrayList<>();
-//        HashSet<String> uniqueValues = new HashSet<>(values);
         for (int j = 1; j < numberOfRows; j++) {
-            Row row1 = sheet.getRow(j);
+            Row row = sheet.getRow(j);
             String newCode = String.format("ind%06d", j);
-            String oldCode = ReadCell(row1.getCell(0));
+            String oldCode = readCell(row.getCell(0));
             System.out.println(String.format("old: %s: , new: ind%s", oldCode, newCode));
             oldVsNewCode.put(oldCode, newCode);
         }
@@ -116,7 +114,7 @@ class ReadXlsxFile {
     }
 
     private static String readCell(Sheet sheet, int j, int i) {
-        return ReadCell(sheet.getRow(j).getCell(i));
+        return readCell(sheet.getRow(j).getCell(i));
     }
 
     private static void writePedigreeListToExcel(List<Pedigree> pedigreeList, String fileForWrite) {
@@ -170,7 +168,7 @@ class ReadXlsxFile {
 
     }
 
-    private static String ReadCell(Cell cell) {
+    private static String readCell(Cell cell) {
         if (cell != null) {
             switch (cell.getCellType()) {
                 case Cell.CELL_TYPE_NUMERIC:
