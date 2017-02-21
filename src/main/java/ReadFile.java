@@ -29,8 +29,8 @@ class ReadXlsxFile {
     }
 
     private void readFile() {
-        String fileName = "c:\\Users\\Mishin737\\Documents\\work_line\\20022017\\readXlsxInJava-master\\mishin_family.xlsx";
-        String fileForWrite = "c:\\Users\\Mishin737\\Documents\\work_line\\20022017\\readXlsxInJava-master\\padigree.xlsx";
+        String fileName = "c:\\Users\\ira\\Documents\\генеалогия\\github\\mishin_family.xlsx";
+        String fileForWrite = "c:\\Users\\ira\\Documents\\генеалогия\\github\\padigree.xlsx";
         try {
             Sheet sheet = getSheet(fileName);
             List<Padigree> xlsxData = readSheetPadigree(sheet);
