@@ -29,8 +29,9 @@ class ReadXlsxFile {
     }
 
     private void readFile() {
-        String fileName = "c:\\Users\\Mishin737\\Documents\\work_line\\20022017\\readXlsxInJava-master\\mishin_family.xlsx";
-        String fileForWrite = "c:\\Users\\Mishin737\\Documents\\work_line\\20022017\\readXlsxInJava-master\\pedigree.xlsx";
+        String root = "c:\\Users\\ira\\Documents\\генеалогия\\github\\";
+        String fileName = root + "mishin_family.xlsx";
+        String fileForWrite = root + "pedigree.xlsx";
         try {
             Sheet sheet = getSheet(fileName);
             List<Pedigree> xlsxData = readSheetPedigree(sheet);
@@ -56,7 +57,7 @@ class ReadXlsxFile {
             Row row = sheet.getRow(j);
             String newCode = String.format("ind%06d", j);
             String oldCode = readCell(row.getCell(0));
-            System.out.println(String.format("old: %s: , new: ind%s", oldCode, newCode));
+            System.out.println(String.format("mv %s.jpg %s.jpg", oldCode.toLowerCase(), newCode.toLowerCase()));
             oldVsNewCode.put(oldCode, newCode);
         }
 
