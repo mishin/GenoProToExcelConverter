@@ -1,8 +1,13 @@
+package ru.mishin;
 /**
  * Created by Nikolay Mishin on 20.02.2017.
  * Read Excel file
  */
 
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import freemarker.template.TemplateExceptionHandler;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
@@ -11,15 +16,16 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
+import java.util.logging.Logger;
 
 class ReadXlsxFile {
+    private final static Logger log = Logger.getLogger(String.valueOf(ReadXlsxFile.class));
+
     public static void main(String[] args) {
         ReadXlsxFile xlsxRead = new ReadXlsxFile();
         xlsxRead.readFile();
@@ -29,9 +35,10 @@ class ReadXlsxFile {
     }
 
     private void readFile() {
-        String root = "c:\\Users\\ira\\Documents\\генеалогия\\github\\";
-        String fileName = root + "mishin_family.xlsx";
-        String fileForWrite = root + "pedigree.xlsx";
+        Properties prop = readProperties();
+        String root = prop.getProperty("root");//"c:\\Users\\ira\\Documents\\генеалогия\\github\\";
+        String fileName = root + prop.getProperty("readFile");//"mishin_family.xlsx";
+        String fileForWrite = root + prop.getProperty("writeFile");//"pedigree.xlsx";
         try {
             Sheet sheet = getSheet(fileName);
             List<Pedigree> xlsxData = readSheetPedigree(sheet);
@@ -39,6 +46,27 @@ class ReadXlsxFile {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    private Properties readProperties() {
+        Properties prop = new Properties();
+        InputStream input = null;
+
+        try {
+            input = new FileInputStream("config.properties");
+            // load a properties file
+            prop.load(input);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return prop;
     }
 
     private List<Pedigree> readSheetPedigree(Sheet sheet) {
@@ -165,7 +193,58 @@ class ReadXlsxFile {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
+    void fillTemplate(Properties prop) {
+        /* ------------------------------------------------------------------------ */
+        /* You should do this ONLY ONCE in the whole application life-cycle:        */
+
+        /* Create and adjust the configuration singleton */
+        Configuration cfg = new Configuration(Configuration.VERSION_2_3_25);
+        try {
+            cfg.setDirectoryForTemplateLoading(new File(prop.getProperty("inPatternDir")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        cfg.setDefaultEncoding("UTF-8");
+        cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+        cfg.setLogTemplateExceptions(false);
+
+ /* ------------------------------------------------------------------------ */
+        /* You usually do these for MULTIPLE TIMES in the application life-cycle:   */
+
+         /* Get the template (uses cache internally) */
+        Template temp = null;
+        try {
+            temp = cfg.getTemplate(prop.getProperty("patternFilename"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        /* Merge data-model with template */
+//        Writer out = new OutputStreamWriter(System.out);
+
+        // File output
+        Writer file = null;
+        try {
+            file = new FileWriter(new File(prop.getProperty("outDirName") + "\\" + prop.getProperty("outFileName")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            temp.process(prop, file);
+            file.flush();
+            file.close();
+        } catch (TemplateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // Note: Depending on what `out` is, you may need to call `out.close()`.
+        // This is usually the case for file output, but not for servlet output.
+//        root.put("latestProduct", latest);
 
     }
 

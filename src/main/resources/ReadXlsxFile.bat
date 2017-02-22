@@ -1,0 +1,1 @@
+java -jar ReadXlsxFile-1.0-SNAPSHOT.jar > ReadXlsxFile.log 2>&1

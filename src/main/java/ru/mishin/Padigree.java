@@ -1,3 +1,4 @@
+package ru.mishin;
 /**
  * Class for storing Pedigree.
  */
