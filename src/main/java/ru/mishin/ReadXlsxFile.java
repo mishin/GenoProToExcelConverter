@@ -42,9 +42,7 @@ class ReadXlsxFile {
             List<Pedigree> xlsxData = readSheetPedigree(sheet);
 //            writePedigreeListToExcel(xlsxData, fileForWrite);
             fillTemplate(prop, xlsxData);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (TemplateException e) {
+        } catch (IOException | TemplateException e) {
             e.printStackTrace();
         }
     }
@@ -83,7 +81,7 @@ class ReadXlsxFile {
         HashMap<String, String> oldVsNewCode = new HashMap<>();
         HashMap<String, String> familyCodeMap = new HashMap<>();
 //        int numberOfColumns = 23;
-        int numberOfRows = 526;
+        int numberOfRows = 603;//526;
         List<Pedigree> pedigreeList = new ArrayList<>();
         for (int j = 1; j < numberOfRows; j++) {
             Row row = sheet.getRow(j);
@@ -211,15 +209,15 @@ class ReadXlsxFile {
             e.printStackTrace();
         }
 
-        makeExampleTemplate(cfg);
+//        makeExampleTemplate(cfg);
 
 
         // Build the data-model
-        Map<String, Object> data = new HashMap<String, Object>();
+        Map<String, Object> data = new HashMap<>();
         data.put("message", "Hello World!");
 
         //List parsing
-        List<String> countries = new ArrayList<String>();
+        List<String> countries = new ArrayList<>();
         countries.add("India");
         countries.add("United States");
         countries.add("Germany");
@@ -231,9 +229,7 @@ class ReadXlsxFile {
         Writer out = new OutputStreamWriter(System.out);
         try {
             template.process(data, out);
-        } catch (TemplateException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (TemplateException | IOException e) {
             e.printStackTrace();
         }
         try {

@@ -2,7 +2,7 @@ package ru.mishin;
 /**
  * Class for storing Pedigree.
  */
-class Pedigree {
+public class Pedigree {
     private String ID;
     private String title;
     private String prefix;

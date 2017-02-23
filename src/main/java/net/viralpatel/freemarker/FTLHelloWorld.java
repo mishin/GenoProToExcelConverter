@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FTLHelloWorld {
+class FTLHelloWorld {
 
     public static void main(String[] args) {
 
@@ -21,11 +21,11 @@ public class FTLHelloWorld {
             Template template = cfg.getTemplate("src/helloworld.ftl");
 
             // Build the data-model
-            Map<String, Object> data = new HashMap<String, Object>();
+            Map<String, Object> data = new HashMap<>();
             data.put("message", "Hello World!");
 
             //List parsing
-            List<String> countries = new ArrayList<String>();
+            List<String> countries = new ArrayList<>();
             countries.add("India");
             countries.add("United States");
             countries.add("Germany");
@@ -45,9 +45,7 @@ public class FTLHelloWorld {
             file.flush();
             file.close();
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (TemplateException e) {
+        } catch (IOException | TemplateException e) {
             e.printStackTrace();
         }
     }
