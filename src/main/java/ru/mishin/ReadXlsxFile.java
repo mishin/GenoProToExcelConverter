@@ -40,7 +40,7 @@ class ReadXlsxFile {
         try {
             Sheet sheet = getSheet(fileName);
             List<Pedigree> xlsxData = readSheetPedigree(sheet);
-//            writePedigreeListToExcel(xlsxData, fileForWrite);
+            writePedigreeListToExcel(xlsxData, fileForWrite);
             fillTemplate(prop, xlsxData);
         } catch (IOException | TemplateException e) {
             e.printStackTrace();
@@ -131,7 +131,18 @@ class ReadXlsxFile {
         pedigree.setWebPage(readCell(sheet, j, 11));
         pedigree.setDateOfBirth(readCell(sheet, j, 12));
         pedigree.setDateOfDeath(readCell(sheet, j, 13));
-        pedigree.setGender(readCell(sheet, j, 14));
+        String gender = readCell(sheet, j, 14);
+        switch (gender) {
+            case "1.0":
+                pedigree.setGender("M");
+                break;
+            case "0.0":
+                pedigree.setGender("F");
+                break;
+            default:
+                pedigree.setGender("M");
+                break;
+        }        ;
         pedigree.setIsLiving(readCell(sheet, j, 15));
         pedigree.setPlaceOfBirth(readCell(sheet, j, 16));
         pedigree.setPlaceOfDeath(readCell(sheet, j, 17));
