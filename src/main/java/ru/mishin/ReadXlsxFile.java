@@ -38,6 +38,7 @@ class ReadXlsxFile {
         Properties prop = readProperties();
         String root = prop.getProperty("root");//"c:\\Users\\ira\\Documents\\генеалогия\\github\\";
         String fileName = root + prop.getProperty("readFile");//"mishin_family.xlsx";
+        System.out.println("fileName: "+fileName);
         String fileForWrite = root + prop.getProperty("writeFile");//"pedigree.xlsx";
         try {
             Sheet sheet = getSheet(fileName);
@@ -53,6 +54,8 @@ class ReadXlsxFile {
 
         try {
             input = new FileInputStream("config.properties");
+            InputStreamReader isr = new InputStreamReader(input, "UTF-8");
+            prop.load(isr);
             // load a properties file
             prop.load(input);
         } catch (IOException ex) {
