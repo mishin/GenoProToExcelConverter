@@ -17,10 +17,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.logging.Logger;
 
 class ReadXlsxFile {
@@ -38,16 +35,20 @@ class ReadXlsxFile {
         Properties prop = readProperties();
         String root = prop.getProperty("root");//"c:\\Users\\ira\\Documents\\генеалогия\\github\\";
         String fileName = root + prop.getProperty("readFile");//"mishin_family.xlsx";
-        System.out.println("fileName: "+fileName);
+        System.out.println("fileName: " + fileName);
         String fileForWrite = root + prop.getProperty("writeFile");//"pedigree.xlsx";
         try {
             Sheet sheet = getSheet(fileName);
             List<Pedigree> xlsxData = readSheetPedigree(sheet);
-            writePedigreeListToExcel(xlsxData, fileForWrite);
+//            writePedigreeListToExcel(xlsxData, fileForWrite);
+            fillTemplate(prop, xlsxData);
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (TemplateException e) {
             e.printStackTrace();
         }
     }
+
     private Properties readProperties() {
         Properties prop = new Properties();
         InputStream input = null;
@@ -88,7 +89,7 @@ class ReadXlsxFile {
             Row row = sheet.getRow(j);
             String newCode = String.format("ind%06d", j);
             String oldCode = readCell(row.getCell(0));
-            System.out.println(String.format("mv %s.jpg %s.jpg", oldCode.toLowerCase(), newCode.toLowerCase()));
+//            System.out.println(String.format("mv %s.jpg %s.jpg", oldCode.toLowerCase(), newCode.toLowerCase()));
             oldVsNewCode.put(oldCode, newCode);
         }
 
@@ -198,8 +199,73 @@ class ReadXlsxFile {
         }
     }
 
-    void fillTemplate(Properties prop) {
-        /* ------------------------------------------------------------------------ */
+    void fillTemplate(Properties prop, List<Pedigree> pedigreeList) throws IOException, TemplateException {
+        Configuration cfg = getConfiguration(prop);
+
+
+         /* Get the template (uses cache internally) */
+        Template template = null;
+        try {
+            template = cfg.getTemplate(prop.getProperty("patternMap"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        makeExampleTemplate(cfg);
+
+
+        // Build the data-model
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("message", "Hello World!");
+
+        //List parsing
+        List<String> countries = new ArrayList<String>();
+        countries.add("India");
+        countries.add("United States");
+        countries.add("Germany");
+        countries.add("France");
+        data.put("individuals", pedigreeList);
+        data.put("countries", countries);
+
+        // Console output
+        Writer out = new OutputStreamWriter(System.out);
+        try {
+            template.process(data, out);
+        } catch (TemplateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            out.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void makeExampleTemplate(Configuration cfg) throws IOException, TemplateException {
+        // Create the root hash. We use a Map here, but it could be a JavaBean too.
+        Map<String, Object> root = new HashMap<>();
+
+// Put string "user" into the root
+        root.put("user", "Big Joe");
+
+// Create the "latestProduct" hash. We use a JavaBean here, but it could be a Map too.
+        Product latest = new Product();
+        latest.setUrl("products/greenmouse.html");
+        latest.setName("green mouse");
+// and put it into the root
+        root.put("latestProduct", latest);
+
+        Template temp = cfg.getTemplate("test.ftlh");
+
+        Writer out = new OutputStreamWriter(System.out);
+        temp.process(root, out);
+    }
+
+    private Configuration getConfiguration(Properties prop) {
+    /* ------------------------------------------------------------------------ */
         /* You should do this ONLY ONCE in the whole application life-cycle:        */
 
         /* Create and adjust the configuration singleton */
@@ -216,39 +282,7 @@ class ReadXlsxFile {
 
  /* ------------------------------------------------------------------------ */
         /* You usually do these for MULTIPLE TIMES in the application life-cycle:   */
-
-         /* Get the template (uses cache internally) */
-        Template temp = null;
-        try {
-            temp = cfg.getTemplate(prop.getProperty("patternFilename"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        /* Merge data-model with template */
-//        Writer out = new OutputStreamWriter(System.out);
-
-        // File output
-        Writer file = null;
-        try {
-            file = new FileWriter(new File(prop.getProperty("outDirName") + "\\" + prop.getProperty("outFileName")));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            temp.process(prop, file);
-            file.flush();
-            file.close();
-        } catch (TemplateException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        // Note: Depending on what `out` is, you may need to call `out.close()`.
-        // This is usually the case for file output, but not for servlet output.
-//        root.put("latestProduct", latest);
-
+        return cfg;
     }
 
     private static String readCell(Cell cell) {
