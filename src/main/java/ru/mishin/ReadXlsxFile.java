@@ -53,7 +53,7 @@ class ReadXlsxFile {
         InputStream input = null;
 
         try {
-            input = new FileInputStream("config.properties");
+            input = new FileInputStream("src/main/resources/config.properties");
             InputStreamReader isr = new InputStreamReader(input, "UTF-8");
             prop.load(isr);
             // load a properties file
