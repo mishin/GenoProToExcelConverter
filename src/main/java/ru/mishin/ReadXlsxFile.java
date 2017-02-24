@@ -27,16 +27,6 @@ import static java.util.Locale.ENGLISH;
 class ReadXlsxFile {
     private final static Logger log = Logger.getLogger(String.valueOf(ReadXlsxFile.class));
 
-    public List<String> getFamilyCode() {
-        return familyCode;
-    }
-
-    public void setFamilyCode(List<String> familyCode) {
-        this.familyCode = familyCode;
-    }
-
-    private List<String> familyCode;
-
     public static void main(String[] args) {
         ReadXlsxFile xlsxRead = new ReadXlsxFile();
         xlsxRead.readFile();
@@ -120,42 +110,6 @@ class ReadXlsxFile {
             pedigree.setFamilyId(familyCodeMap.get(familyString));
         }
 
-//        int i=0;
-        //loop a Map
-        List<String> family = null;
-        // more elegant way, this should be the standard way, recommend!
-        System.out.println("\nExample 2...");
-        for (Map.Entry<String, String> entry : familyCodeMap.entrySet()) {
-            System.out.println("Key : " + entry.getKey() + " Value : " + entry.getValue());
-//            family.add(entry.getValue());
-        }
-
-/*        Iterator<Map.Entry<String,String>> iterator = familyCodeMap.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String,String> entry = (Map.Entry<String,String>) iterator.next();
-            System.out.println("Key : " + entry.getKey() + " Value :" + entry.getValue());
-            family.add(entry.getValue());
-        }*/
-
-        setFamilyCode(family);
-/*        for (Map.Entry<String, String> entry : familyCodeMap.entrySet()) {
-            String value = entry.getValue();
-            System.out.println(" Value : " + value);
-            familyCode.add(value);
-        }*/
-        //Java 8 only, forEach and Lambda
-/*        familyCodeMap.forEach((k,v)->{
-//                    System.out.println(++i);
-//            familyCode.add(v);
-                    System.out.println("Key : " + k + " Value : " + v);
-                }
-        );*/
-
-/*        for (String set : familyCodeMap.values()) {
-            System.out.println(set);
-            if (set != null)
-                familyCode.add(set);
-        }*/
         return pedigreeList;
     }
 
@@ -288,7 +242,28 @@ class ReadXlsxFile {
         Map<String, Object> data = new HashMap<>();
         data.put("individuals", pedigreeList);
         data.put("pedigreelinks", pedigreeLinkList);
-        data.put("families", getFamilyCode());
+
+        List<String> familyCode = null;
+        familyCode.add("fam000001");
+        //Java 8 only, forEach and Lambda
+        for (Pedigree pedigree : pedigreeList) {
+            String family = pedigree.getFamilyId();
+//            if (family != null && !familyCode.contains(family)) {
+                System.out.println(family);
+//                familyCode.add(k.getFamilyId());
+//            }
+        }
+            /*if (set != null)
+                familyCode.add(set);
+        pedigreeLinkList.forEach((k) -> {
+            if (!familyCode.contains(k.getFamilyId())) {
+                System.out.println(k.getFamilyId());
+//                familyCode.add(k.getFamilyId());
+            }
+            ;
+        });*/
+
+        data.put("families", familyCode);
 
         // Console output
         Writer out = new OutputStreamWriter(System.out);
