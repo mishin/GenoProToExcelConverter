@@ -102,21 +102,25 @@ class ReadXlsxFile {
 
         int z = 0;
         for (Pedigree pedigree : pedigreeList) {
-            if (pedigree.getFatherId() != null && pedigree.getMotherId() != null) {
-                String familyString = getFamilyString(pedigree);
-                if (!familyCodeMap.containsKey(familyString)) {
-                    String famCode = String.format("fam%06d", ++z);
-                    familyCodeMap.put(familyString, famCode);
-                }
-                pedigree.setFamilyId(familyCodeMap.get(familyString));
+//            if (pedigree.getFatherId() != null && pedigree.getMotherId() != null) {
+            String familyString = getFamilyString(pedigree);
+            if (!familyCodeMap.containsKey(familyString)) {
+                String famCode = String.format("fam%06d", ++z);
+                familyCodeMap.put(familyString, famCode);
             }
+            pedigree.setFamilyId(familyCodeMap.get(familyString));
+//            }
         }
 
         return pedigreeList;
     }
 
     private String getFamilyString(Pedigree pedigree) {
-        return pedigree.getFatherId() + "," + pedigree.getMotherId();
+        if (pedigree.getFatherId() != null || pedigree.getMotherId() != null) {
+            return pedigree.getFatherId() + "," + pedigree.getMotherId();
+        } else {
+            return pedigree.getID();
+        }
     }
 
     private Pedigree setPedigree(Sheet sheet, int j, HashMap<String, String> oldVsNewCode) {
