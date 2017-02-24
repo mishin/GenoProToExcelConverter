@@ -135,18 +135,9 @@ class ReadXlsxFile {
         pedigree.setWebPage(readCell(sheet, j, 11));
         String dateOfBirth = readCell(sheet, j, 12);
         if (dateOfBirth != null) {
-//        <Date>13/7/1888</Date>
-//        23 Mar 1979
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d,MM,yyyy");
-//
-//            String date = "16/08/2016";
-
-//convert String to LocalDate
-            System.out.println("dateOfBirth: " + dateOfBirth);
-            System.out.println("FirstName: " + pedigree.getFirstName());
-            System.out.println("ID: " + pedigree.getID());
             LocalDate localDate = LocalDate.parse(dateOfBirth, formatter);
-            pedigree.setDateOfBirth(localDate.format(DateTimeFormatter.ofPattern("d MMM yyyy",ENGLISH)));
+            pedigree.setDateOfBirth(localDate.format(DateTimeFormatter.ofPattern("d MMM yyyy", ENGLISH)));
         } else {
             pedigree.setDateOfBirth("");
         }
@@ -319,7 +310,7 @@ class ReadXlsxFile {
                 case Cell.CELL_TYPE_NUMERIC:
                     return String.valueOf(cell.getNumericCellValue());
                 case Cell.CELL_TYPE_STRING:
-                    return cell.getStringCellValue();
+                    return cell.getStringCellValue().trim();
                 case Cell.CELL_TYPE_FORMULA:
                     break;
                 case Cell.CELL_TYPE_BLANK:
