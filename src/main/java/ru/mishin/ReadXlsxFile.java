@@ -25,6 +25,8 @@ import java.util.logging.Logger;
 import static java.util.Locale.ENGLISH;
 
 class ReadXlsxFile {
+
+    private  List<String> familyCode =  new ArrayList<>();
     private final static Logger log = Logger.getLogger(String.valueOf(ReadXlsxFile.class));
 
     public static void main(String[] args) {
@@ -243,7 +245,7 @@ class ReadXlsxFile {
         data.put("individuals", pedigreeList);
         data.put("pedigreelinks", pedigreeLinkList);
 
-        List<String> familyCode = null;
+/*        List<String> familyCode = null;
         familyCode.add("fam000001");
         //Java 8 only, forEach and Lambda
         for (Pedigree pedigree : pedigreeList) {
@@ -252,7 +254,7 @@ class ReadXlsxFile {
                 System.out.println(family);
 //                familyCode.add(k.getFamilyId());
 //            }
-        }
+        }*/
             /*if (set != null)
                 familyCode.add(set);
         pedigreeLinkList.forEach((k) -> {
@@ -287,7 +289,10 @@ class ReadXlsxFile {
         <PedigreeLink PedigreeLink="Parent" Family="fam00002" Individual="ind00005"/>
         <PedigreeLink PedigreeLink="Biological" Family="fam00002" Individual="ind00006"/>*/
 
+//        List<String> familyCode =  new ArrayList<>();
+
         for (Pedigree pedigree : pedigreeList) {
+            familyCode.add(pedigree.getFamilyId());
             if (pedigree.getID() != null) {
                 PedigreeLink pedigreeLink = new PedigreeLink();
                 pedigreeLink.setParentOrChild("Biological");
