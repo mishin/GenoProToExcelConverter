@@ -108,7 +108,7 @@ class ReadXlsxFile {
                     String famCode = String.format("fam%06d", ++z);
                     familyCodeMap.put(familyString, famCode);
                 }
-                pedigree.setFamily(familyCodeMap.get(familyString));
+                pedigree.setFamilyId(familyCodeMap.get(familyString));
             }
         }
 
@@ -145,10 +145,10 @@ class ReadXlsxFile {
         String gender = readCell(sheet, j, 14);
         switch (gender) {
             case "1.0":
-                pedigree.setGender("M");
+                pedigree.setGender("F");
                 break;
             case "0.0":
-                pedigree.setGender("F");
+                pedigree.setGender("M");
                 break;
             default:
                 pedigree.setGender("M");
@@ -204,7 +204,7 @@ class ReadXlsxFile {
             row.createCell(cellIndex++).setCellValue(pedigree.getPlacesOfLiving());
             row.createCell(cellIndex++).setCellValue(pedigree.getGeneral());
             //noinspection UnusedAssignment,UnusedAssignment,UnusedAssignment
-            row.createCell(cellIndex++).setCellValue(pedigree.getFamily());
+            row.createCell(cellIndex++).setCellValue(pedigree.getFamilyId());
 
         }
 
@@ -233,20 +233,22 @@ class ReadXlsxFile {
         }
 
 //        makeExampleTemplate(cfg);
+        List<PedigreeLink> pedigreeLinkList = getPedigreeLinks(pedigreeList);
 
-
+        System.out.println(pedigreeLinkList);
         // Build the data-model
         Map<String, Object> data = new HashMap<>();
-        data.put("message", "Hello World!");
+//        data.put("message", "Hello World!");
 
         //List parsing
-        List<String> countries = new ArrayList<>();
+/*        List<String> countries = new ArrayList<>();
         countries.add("India");
         countries.add("United States");
         countries.add("Germany");
-        countries.add("France");
+        countries.add("France");*/
         data.put("individuals", pedigreeList);
-        data.put("countries", countries);
+        data.put("pedigreelinks", pedigreeLinkList);
+//        data.put("countries", countries);
 
         // Console output
         Writer out = new OutputStreamWriter(System.out);
@@ -261,6 +263,39 @@ class ReadXlsxFile {
             e.printStackTrace();
         }
 
+    }
+
+    private List<PedigreeLink> getPedigreeLinks(List<Pedigree> pedigreeList) {
+        List<PedigreeLink> pedigreeLinkList = new ArrayList<>();
+
+        /*<PedigreeLink PedigreeLink="Parent" Family="fam00002" Individual="ind00004"/>
+        <PedigreeLink PedigreeLink="Parent" Family="fam00002" Individual="ind00005"/>
+        <PedigreeLink PedigreeLink="Biological" Family="fam00002" Individual="ind00006"/>*/
+
+        for (Pedigree pedigree : pedigreeList) {
+            if (pedigree.getID() != null) {
+                PedigreeLink pedigreeLink = new PedigreeLink();
+                pedigreeLink.setParentOrChild("Biological");
+                pedigreeLink.setFamilyId(pedigree.getFamilyId());
+                pedigreeLink.setIndividualId(pedigree.getID());
+                pedigreeLinkList.add(pedigreeLink);
+            }
+            if (pedigree.getMotherId() != null) {
+                PedigreeLink pedigreeLink = new PedigreeLink();
+                pedigreeLink.setParentOrChild("Parent");
+                pedigreeLink.setFamilyId(pedigree.getFamilyId());
+                pedigreeLink.setIndividualId(pedigree.getMotherId());
+                pedigreeLinkList.add(pedigreeLink);
+            }
+            if (pedigree.getFatherId() != null) {
+                PedigreeLink pedigreeLink = new PedigreeLink();
+                pedigreeLink.setParentOrChild("Parent");
+                pedigreeLink.setFamilyId(pedigree.getFamilyId());
+                pedigreeLink.setIndividualId(pedigree.getFatherId());
+                pedigreeLinkList.add(pedigreeLink);
+            }
+        }
+        return pedigreeLinkList;
     }
 
     private void makeExampleTemplate(Configuration cfg) throws IOException, TemplateException {

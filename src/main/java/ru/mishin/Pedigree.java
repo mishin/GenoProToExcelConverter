@@ -27,7 +27,7 @@ public class Pedigree {
     private String workPlaces;
     private String placesOfLiving;
     private String general;
-    private String family;
+    private String familyId;
 
     public Pedigree() {
 
@@ -225,11 +225,11 @@ public class Pedigree {
         this.general = general;
     }
 
-    public String getFamily() {
-        return family;
+    public String getFamilyId() {
+        return familyId;
     }
 
-    public void setFamily(String family) {
-        this.family = family;
+    public void setFamilyId(String familyId) {
+        this.familyId = familyId;
     }
 }
