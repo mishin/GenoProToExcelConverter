@@ -17,8 +17,12 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.logging.Logger;
+
+import static java.util.Locale.ENGLISH;
 
 class ReadXlsxFile {
     private final static Logger log = Logger.getLogger(String.valueOf(ReadXlsxFile.class));
@@ -129,7 +133,23 @@ class ReadXlsxFile {
         pedigree.setMotherId(oldVsNewCode.get(readCell(sheet, j, 9)));
         pedigree.setEmail(readCell(sheet, j, 10));
         pedigree.setWebPage(readCell(sheet, j, 11));
-        pedigree.setDateOfBirth(readCell(sheet, j, 12));
+        String dateOfBirth = readCell(sheet, j, 12);
+        if (dateOfBirth != null) {
+//        <Date>13/7/1888</Date>
+//        23 Mar 1979
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d,MM,yyyy");
+//
+//            String date = "16/08/2016";
+
+//convert String to LocalDate
+            System.out.println("dateOfBirth: " + dateOfBirth);
+            System.out.println("FirstName: " + pedigree.getFirstName());
+            System.out.println("ID: " + pedigree.getID());
+            LocalDate localDate = LocalDate.parse(dateOfBirth, formatter);
+            pedigree.setDateOfBirth(localDate.format(DateTimeFormatter.ofPattern("d MMM yyyy",ENGLISH)));
+        } else {
+            pedigree.setDateOfBirth("");
+        }
         pedigree.setDateOfDeath(readCell(sheet, j, 13));
         String gender = readCell(sheet, j, 14);
         switch (gender) {
@@ -142,7 +162,8 @@ class ReadXlsxFile {
             default:
                 pedigree.setGender("M");
                 break;
-        }        ;
+        }
+        ;
         pedigree.setIsLiving(readCell(sheet, j, 15));
         pedigree.setPlaceOfBirth(readCell(sheet, j, 16));
         pedigree.setPlaceOfDeath(readCell(sheet, j, 17));
