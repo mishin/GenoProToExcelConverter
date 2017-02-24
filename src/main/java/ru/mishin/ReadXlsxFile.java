@@ -22,11 +22,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.logging.Logger;
 
+import static java.lang.System.out;
 import static java.util.Locale.ENGLISH;
 
 class ReadXlsxFile {
 
-    private  List<String> familyCode =  new ArrayList<>();
+    private List<String> familyCode = new ArrayList<>();
     private final static Logger log = Logger.getLogger(String.valueOf(ReadXlsxFile.class));
 
     public static void main(String[] args) {
@@ -41,7 +42,7 @@ class ReadXlsxFile {
         Properties prop = readProperties();
         String root = prop.getProperty("root");//"c:\\Users\\ira\\Documents\\генеалогия\\github\\";
         String fileName = root + prop.getProperty("readFile");//"mishin_family.xlsx";
-        System.out.println("fileName: " + fileName);
+        out.println("fileName: " + fileName);
         String fileForWrite = root + prop.getProperty("writeFile");//"pedigree.xlsx";
         try {
             Sheet sheet = getSheet(fileName);
@@ -218,7 +219,7 @@ class ReadXlsxFile {
             workbook.write(fos);
             fos.close();
 
-            System.out.println(fileForWrite + " is successfully written");
+            out.println(fileForWrite + " is successfully written");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -244,42 +245,23 @@ class ReadXlsxFile {
         Map<String, Object> data = new HashMap<>();
         data.put("individuals", pedigreeList);
         data.put("pedigreelinks", pedigreeLinkList);
-
-/*        List<String> familyCode = null;
-        familyCode.add("fam000001");
-        //Java 8 only, forEach and Lambda
-        for (Pedigree pedigree : pedigreeList) {
-            String family = pedigree.getFamilyId();
-//            if (family != null && !familyCode.contains(family)) {
-                System.out.println(family);
-//                familyCode.add(k.getFamilyId());
-//            }
-        }*/
-            /*if (set != null)
-                familyCode.add(set);
-        pedigreeLinkList.forEach((k) -> {
-            if (!familyCode.contains(k.getFamilyId())) {
-                System.out.println(k.getFamilyId());
-//                familyCode.add(k.getFamilyId());
-            }
-            ;
-        });*/
-
         data.put("families", familyCode);
 
         // Console output
-        Writer out = new OutputStreamWriter(System.out);
+//        Writer out = new OutputStreamWriter(System.out);
+
+        // File output
+        Writer file = new FileWriter(new File(prop.getProperty("inPatternDir") + prop.getProperty("patternOut")));
         try {
-            template.process(data, out);
+            template.process(data, file);
+            file.flush();
+            file.close();
+
+//            template.process(data, out);
         } catch (TemplateException | IOException e) {
             e.printStackTrace();
         }
-        try {
-            out.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        out.flush();
     }
 
     private List<PedigreeLink> getPedigreeLinks(List<Pedigree> pedigreeList) {
@@ -318,7 +300,7 @@ class ReadXlsxFile {
         return pedigreeLinkList;
     }
 
-    private void makeExampleTemplate(Configuration cfg) throws IOException, TemplateException {
+/*    private void makeExampleTemplate(Configuration cfg) throws IOException, TemplateException {
         // Create the root hash. We use a Map here, but it could be a JavaBean too.
         Map<String, Object> root = new HashMap<>();
 
@@ -334,9 +316,9 @@ class ReadXlsxFile {
 
         Template temp = cfg.getTemplate("test.ftlh");
 
-        Writer out = new OutputStreamWriter(System.out);
+        Writer out = new OutputStreamWriter(out);
         temp.process(root, out);
-    }
+    }*/
 
     private Configuration getConfiguration(Properties prop) {
     /* ------------------------------------------------------------------------ */
@@ -389,7 +371,7 @@ class ReadXlsxFile {
                 workbook = new XSSFWorkbook(fileInputStream);
                 break;
             default:
-                System.out.println("Wrong File Type");
+                out.println("Wrong File Type");
                 break;
         }
         Sheet sheet;
