@@ -236,6 +236,7 @@ class ReadXlsxFile {
 
 //        makeExampleTemplate(cfg);
         List<PedigreeLink> pedigreeLinkList = removeDuplicates(getPedigreeLinks(pedigreeList));
+        familyCode = removeFamilyCodeDuplicates(familyCode);
 
 //        System.out.println(pedigreeLinkList);
         // Build the data-model
@@ -259,6 +260,20 @@ class ReadXlsxFile {
             e.printStackTrace();
         }
         out.flush();
+    }
+
+    private List<String> removeFamilyCodeDuplicates(List<String> list) {
+        SortedSet<String> sortedSet = new TreeSet<>();
+        sortedSet.addAll(list);
+
+        //Now clear the list, and start adding them again
+        list.clear();
+        for (String obj : sortedSet) {
+            if (!list.contains(obj)) {
+                list.add(obj);
+            }
+        }
+        return list;
     }
 
     private List<PedigreeLink> removeDuplicates(List<PedigreeLink> list) {

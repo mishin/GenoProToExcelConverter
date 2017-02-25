@@ -3,12 +3,11 @@ package ru.mishin;
 /**
  * Make PedigreeLink
  */
-public class PedigreeLink {
+public class PedigreeLink implements Comparable<PedigreeLink>{
     public String toString() {
-        String obj = "ParentOrChild: " + this.getParentOrChild()
+        return "ParentOrChild: " + this.getParentOrChild()
                 + " IndividualId: " + this.getIndividualId()
                 + " FamilyId:" + this.getFamilyId();
-        return obj;
     }
 
     public String getParentOrChild() {
@@ -38,4 +37,24 @@ public class PedigreeLink {
     private String parentOrChild;
     private String familyId;
     private String individualId;
+
+    @Override
+    public int compareTo(PedigreeLink p) {
+        int lastCmp = parentOrChild.compareTo(p.parentOrChild);
+        if(lastCmp != 0){
+            return lastCmp;
+        }
+        lastCmp = familyId.compareTo(p.familyId);
+        return ((lastCmp != 0) ? lastCmp : individualId.compareTo(p.individualId));
+    }
+
+    public boolean equals(Object o) {
+        if (!(o instanceof PedigreeLink))
+            return false;
+        PedigreeLink n = (PedigreeLink) o;
+        return n.parentOrChild.equals(parentOrChild)
+                && n.familyId.equals(familyId)
+                && n.individualId.equals(individualId);
+    }
+
 }
