@@ -136,27 +136,9 @@ class ReadXlsxFile {
         pedigree.setMotherId(oldVsNewCode.get(readCell(sheet, j, 9)));
         pedigree.setEmail(readCell(sheet, j, 10));
         pedigree.setWebPage(readCell(sheet, j, 11));
-        String dateOfBirth = readCell(sheet, j, 12);
-        if (dateOfBirth != null) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d,MM,yyyy");
-            LocalDate localDate = LocalDate.parse(dateOfBirth, formatter);
-            pedigree.setDateOfBirth(localDate.format(DateTimeFormatter.ofPattern("d MMM yyyy", ENGLISH)));
-        } else {
-            pedigree.setDateOfBirth("");
-        }
-        pedigree.setDateOfDeath(readCell(sheet, j, 13));
-        String gender = readCell(sheet, j, 14);
-        switch (gender) {
-            case "1.0":
-                pedigree.setGender("F");
-                break;
-            case "0.0":
-                pedigree.setGender("M");
-                break;
-            default:
-                pedigree.setGender("M");
-                break;
-        }
+        pedigree.setDateOfBirth(getDateFromExcel(readCell(sheet, j, 12)));
+        pedigree.setDateOfDeath(getDateFromExcel(readCell(sheet, j, 13)));
+        pedigree.setGender(getGenderFromExcel(readCell(sheet, j, 14)));
         pedigree.setIsLiving(readCell(sheet, j, 15));
         pedigree.setPlaceOfBirth(readCell(sheet, j, 16));
         pedigree.setPlaceOfDeath(readCell(sheet, j, 17));
@@ -169,6 +151,33 @@ class ReadXlsxFile {
         return pedigree;
     }
 
+    private String getGenderFromExcel(String gender) {
+        String convertedGander = null;
+        switch (gender) {
+            case "1.0":
+                convertedGander = "F";
+                break;
+            case "0.0":
+                convertedGander = "M";
+                break;
+            default:
+                convertedGander = "M";
+                break;
+        }
+        return convertedGander;
+    }
+
+    private String getDateFromExcel(String date) {
+        if (date != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d,MM,yyyy");
+            LocalDate localDate = LocalDate.parse(date, formatter);
+            date = localDate.format(DateTimeFormatter.ofPattern("d MMM yyyy", ENGLISH));
+        } else {
+            date = "";
+        }
+        return date;
+    }
+
     private static String readCell(Sheet sheet, int j, int i) {
         return readCell(sheet.getRow(j).getCell(i));
     }
@@ -178,9 +187,11 @@ class ReadXlsxFile {
         Sheet pedigreeSheet = workbook.createSheet("Pedigree");
 
         int rowIndex = 0;
+        int cellIndex;
+
         for (Pedigree pedigree : pedigreeList) {
             Row row = pedigreeSheet.createRow(rowIndex++);
-            int cellIndex = 0;
+            cellIndex = 0;
             row.createCell(cellIndex++).setCellValue(pedigree.getID());
             row.createCell(cellIndex++).setCellValue(pedigree.getTitle());
             row.createCell(cellIndex++).setCellValue(pedigree.getPrefix());
