@@ -1,0 +1,75 @@
+<#include "header.ftl">
+
+<Individuals>
+
+<#list individuals as individual>
+<Individual ID="${individual.ID}">
+    <Name>${individual.firstName!""} ${individual.midName!""} ${individual.lastName!""}
+        <Display>${individual.firstName!""} ${individual.midName!""} ${individual.lastName!""}</Display>
+        <First>${individual.firstName!""}</First>
+        <Middle>${individual.midName!""}</Middle>
+        <Last>${individual.lastName!""}</Last>
+    </Name>
+    <Pictures Primary="${individual.ID}">${individual.ID}</Pictures>
+    <Position BoundaryRect="-171,182,-99,89">-135,150</Position>
+    <Display>
+        <Colors>
+            <Border>
+                <Fill>#FFFF80</Fill>
+            </Border>
+        </Colors>
+    </Display>
+    <Gender>${individual.gender!""}</Gender>
+    <Birth>
+        <Date>${individual.dateOfBirth!""}</Date>
+    </Birth>
+    <#if individual.dateOfDeath??>
+        <IsDead>Y</IsDead>
+        <Death>
+            <Date>${individual.dateOfDeath!""}</Date>
+        </Death>
+    </#if>
+    <#if individual.general??>
+        <Comment>${individual.general!""}</Comment>
+    </#if>
+
+</Individual>
+</#list>
+</Individuals>
+
+<Families>
+
+<#list families as family>
+<Family ID="${family}">
+    <Position>-105,65
+        <Top>
+            <Left>-135,65</Left>
+            <Right>-50,65</Right>
+        </Top>
+    </Position>
+</Family>
+</#list>
+</Families>
+
+<PedigreeLinks>
+
+<#list pedigreelinks as pedigreeLink>
+<PedigreeLink PedigreeLink="${pedigreeLink.parentOrChild}" Family="${pedigreeLink.familyId}" Individual="${pedigreeLink.individualId}"/>
+</#list>
+</PedigreeLinks>
+
+<Pictures>
+
+<#list individuals as individual>
+<Picture ID="${individual.ID}">
+    <Path Relative="c:\Users\ira\Documents\genealogy\github\pictures\${individual.ID}.jpg"
+          FileUnique="${individual.ID}.jpg" Report="pictures/${individual.ID}.jpg">
+        c:\Users\ira\Documents\genealogy\github\pictures\${individual.ID}.jpg
+    </Path>
+    <Name>i0</Name>
+    <Cache FileSize="48580" Dimension="480x640" Megapixels="0.30" BPP="24" DPI="300"/>
+</Picture>
+</#list>
+</Pictures>
+
+<#include "footer.ftl">
