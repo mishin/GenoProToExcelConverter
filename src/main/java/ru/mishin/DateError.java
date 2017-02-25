@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 import static java.util.Locale.ENGLISH;
 
 /**
- * Created by ira on 24.02.2017.
+ * Test wrong Date.
  */
 public class DateError {
     public static void main(String[] args) {

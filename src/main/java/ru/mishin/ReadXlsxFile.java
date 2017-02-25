@@ -20,7 +20,6 @@ import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.logging.Logger;
 
 import static java.lang.System.out;
 import static java.util.Locale.ENGLISH;
@@ -28,7 +27,6 @@ import static java.util.Locale.ENGLISH;
 class ReadXlsxFile {
 
     private List<String> familyCode = new ArrayList<>();
-    private final static Logger log = Logger.getLogger(String.valueOf(ReadXlsxFile.class));
 
     public static void main(String[] args) {
         ReadXlsxFile xlsxRead = new ReadXlsxFile();
@@ -49,7 +47,7 @@ class ReadXlsxFile {
             List<Pedigree> xlsxData = readSheetPedigree(sheet);
             writePedigreeListToExcel(xlsxData, fileForWrite);
             fillTemplate(prop, xlsxData);
-        } catch (IOException | TemplateException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -159,7 +157,6 @@ class ReadXlsxFile {
                 pedigree.setGender("M");
                 break;
         }
-        ;
         pedigree.setIsLiving(readCell(sheet, j, 15));
         pedigree.setPlaceOfBirth(readCell(sheet, j, 16));
         pedigree.setPlaceOfDeath(readCell(sheet, j, 17));
@@ -225,7 +222,7 @@ class ReadXlsxFile {
         }
     }
 
-    void fillTemplate(Properties prop, List<Pedigree> pedigreeList) throws IOException, TemplateException {
+    private void fillTemplate(Properties prop, List<Pedigree> pedigreeList) throws IOException {
         Configuration cfg = getConfiguration(prop);
 
 
@@ -238,7 +235,7 @@ class ReadXlsxFile {
         }
 
 //        makeExampleTemplate(cfg);
-        List<PedigreeLink> pedigreeLinkList = getPedigreeLinks(pedigreeList);
+        List<PedigreeLink> pedigreeLinkList = removeDuplicates(getPedigreeLinks(pedigreeList));
 
 //        System.out.println(pedigreeLinkList);
         // Build the data-model
@@ -264,6 +261,20 @@ class ReadXlsxFile {
         out.flush();
     }
 
+    private List<PedigreeLink> removeDuplicates(List<PedigreeLink> list) {
+        SortedSet<PedigreeLink> sortedSet = new TreeSet<>();
+        sortedSet.addAll(list);
+
+        //Now clear the list, and start adding them again
+        list.clear();
+        for (PedigreeLink obj : sortedSet) {
+            if (!list.contains(obj)) {
+                list.add(obj);
+            }
+        }
+        return list;
+    }
+
     private List<PedigreeLink> getPedigreeLinks(List<Pedigree> pedigreeList) {
         List<PedigreeLink> pedigreeLinkList = new ArrayList<>();
 
@@ -276,28 +287,27 @@ class ReadXlsxFile {
         for (Pedigree pedigree : pedigreeList) {
             familyCode.add(pedigree.getFamilyId());
             if (pedigree.getID() != null) {
-                PedigreeLink pedigreeLink = new PedigreeLink();
-                pedigreeLink.setParentOrChild("Biological");
-                pedigreeLink.setFamilyId(pedigree.getFamilyId());
-                pedigreeLink.setIndividualId(pedigree.getID());
+                PedigreeLink pedigreeLink = getPedigreeLink(FamilyRole.Biological.toString(), pedigree.getFamilyId(), pedigree.getID());
                 pedigreeLinkList.add(pedigreeLink);
             }
             if (pedigree.getMotherId() != null) {
-                PedigreeLink pedigreeLink = new PedigreeLink();
-                pedigreeLink.setParentOrChild("Parent");
-                pedigreeLink.setFamilyId(pedigree.getFamilyId());
-                pedigreeLink.setIndividualId(pedigree.getMotherId());
+                PedigreeLink pedigreeLink = getPedigreeLink(FamilyRole.Parent.toString(), pedigree.getFamilyId(), pedigree.getMotherId());
                 pedigreeLinkList.add(pedigreeLink);
             }
             if (pedigree.getFatherId() != null) {
-                PedigreeLink pedigreeLink = new PedigreeLink();
-                pedigreeLink.setParentOrChild("Parent");
-                pedigreeLink.setFamilyId(pedigree.getFamilyId());
-                pedigreeLink.setIndividualId(pedigree.getFatherId());
+                PedigreeLink pedigreeLink = getPedigreeLink(FamilyRole.Parent.toString(), pedigree.getFamilyId(), pedigree.getFatherId());
                 pedigreeLinkList.add(pedigreeLink);
             }
         }
         return pedigreeLinkList;
+    }
+
+    private PedigreeLink getPedigreeLink(String parentOrChild, String familyId, String id) {
+        PedigreeLink pedigreeLink = new PedigreeLink();
+        pedigreeLink.setParentOrChild(parentOrChild);
+        pedigreeLink.setFamilyId(familyId);
+        pedigreeLink.setIndividualId(id);
+        return pedigreeLink;
     }
 
 /*    private void makeExampleTemplate(Configuration cfg) throws IOException, TemplateException {
